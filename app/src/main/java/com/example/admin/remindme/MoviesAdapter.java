@@ -7,6 +7,7 @@ package com.example.admin.remindme;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.joda.time.convert.Converter;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,22 +69,46 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         DataBaseModel dbm=arrayList.get(position);
         ddd=dbm;
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
+        Date startDate=new Date();
+        Date installDate=new Date();
+        String installDateString;
         String currentDateTimeString;
+        Calendar cal=Calendar.getInstance();
+        Calendar cal1=Calendar.getInstance();
+        String tmp=dbm.getInstall_Month();
+        char x=tmp.charAt(0);
+        int im= Integer.valueOf(x)-48;
         currentDateTimeString=mDay + "/" + (mMonth + 1) + "/" + mYear;
-        String endDateTimeString=dbm.getEnd_Date();
-        SimpleDateFormat simpleDateFormat =
-                new SimpleDateFormat("dd/M/yyyy");
-
+        try
+        {
+            startDate=simpleDateFormat.parse(dbm.getStart_Date());
+            installDate = simpleDateFormat.parse(currentDateTimeString);
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        cal.setTime(startDate);
+        cal1.setTime(installDate);
+        while (cal.before(cal1))
+        {
+            cal.add(Calendar.MONTH, im);
+        }
+        Date date2;
+        mDay=cal.get(Calendar.DAY_OF_MONTH);
+        mMonth=cal.get(Calendar.MONTH);
+        mYear=cal.get(Calendar.YEAR);
+        installDateString=mDay + "/" + (mMonth + 1) + "/" + mYear;
         try {
 
-            Date date2 = simpleDateFormat.parse(endDateTimeString);
-            Date date1 = simpleDateFormat.parse(currentDateTimeString);
+            date2 = simpleDateFormat.parse(installDateString);
+            installDate = simpleDateFormat.parse(currentDateTimeString);
 
-            total_days=printDifference(date1, date2);
+            total_days=printDifference(installDate, date2);
 
         } catch (ParseException e) {
             e.printStackTrace();
