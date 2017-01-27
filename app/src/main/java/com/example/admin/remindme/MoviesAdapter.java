@@ -4,8 +4,10 @@ package com.example.admin.remindme;
  * Created by admin on 24-01-2017.
  */
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -13,8 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.joda.time.convert.Converter;
 
@@ -37,13 +42,57 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
         public TextView name,no,days_left1;
         public ProgressBar progressBar;
+        public CheckBox chk;
+        public SQLClass db;
 
-        public MyViewHolder(View view) {
+        public MyViewHolder(final View view) {
             super(view);
             progressBar = (ProgressBar) view.findViewById(R.id.progressBar2);
             name=(TextView)view.findViewById(R.id.textView_name);
             no=(TextView)view.findViewById(R.id.textView_no);
             days_left1=(TextView)view.findViewById(R.id.days_left);
+            chk=(CheckBox)view.findViewById(R.id.checkbox_paid);
+            db=new SQLClass(view.getContext());
+            chk.setOnCheckedChangeListener(
+                    new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            AlertDialog.Builder a_builder=new AlertDialog.Builder(view.getContext());
+                            a_builder.setMessage("Are you sure want to quit?")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Calendar cal=Calendar.getInstance();
+                                            String date;
+                                            int mMonth=cal.get(Calendar.MONTH);
+                                            int mYear=cal.get(Calendar.YEAR);
+                                            int mDay=cal.get(Calendar.DAY_OF_MONTH);
+                                            date=mDay+"/"+mMonth+"/"+mYear;
+                                            boolean isInserted=db.insertHistory(ddd.getId(),date);
+                                            if(isInserted==true)
+                                            {
+                                                Toast.makeText(view.getContext(),"Deleted Successfully",Toast.LENGTH_SHORT).show();
+                                            }
+                                            else
+                                            {
+                                                Toast.makeText(view.getContext(),"not deleted",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                            chk.setChecked(false);
+                                        }
+                                    });
+                            AlertDialog alert=a_builder.create();
+                            alert.setTitle("Alert");
+                            alert.show();
+                        }
+                    }
+            );
         }
     }
 
