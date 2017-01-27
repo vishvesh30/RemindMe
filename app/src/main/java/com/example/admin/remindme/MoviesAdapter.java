@@ -5,6 +5,7 @@ package com.example.admin.remindme;
  */
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AlertDialog;
@@ -53,10 +54,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
             days_left1=(TextView)view.findViewById(R.id.days_left);
             chk=(CheckBox)view.findViewById(R.id.checkbox_paid);
             db=new SQLClass(view.getContext());
-            chk.setOnCheckedChangeListener(
-                    new CompoundButton.OnCheckedChangeListener() {
+            chk.setOnClickListener(
+                    new View.OnClickListener() {
                         @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        public void onClick(final View view) {
                             AlertDialog.Builder a_builder=new AlertDialog.Builder(view.getContext());
                             a_builder.setMessage("Are you sure want to quit?")
                                     .setCancelable(false)
@@ -73,6 +74,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                                             if(isInserted==true)
                                             {
                                                 Toast.makeText(view.getContext(),"Deleted Successfully",Toast.LENGTH_SHORT).show();
+                                                Intent i=History.newIntent(view.getContext(),ddd,date);
+                                                view.getContext().startActivity(i);
                                             }
                                             else
                                             {
@@ -83,8 +86,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
                                             chk.setChecked(false);
+                                            dialog.cancel();
                                         }
                                     });
                             AlertDialog alert=a_builder.create();
@@ -93,6 +96,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                         }
                     }
             );
+            /*chk.setOnCheckedChangeListener(
+                    new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                        }
+                    }
+            );*/
         }
     }
 
