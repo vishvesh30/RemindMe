@@ -20,6 +20,7 @@ public class SQLClass extends SQLiteOpenHelper{
     public static final String TABLE_NAME="info_table";
     public static final String CAT_NAME="cat_table";
     public static final String EXT_TABLE="extra_table";
+    public static final String PAY_HISTORY_TABLE="history_table";
     public static final String CAT_COL1="CATEGORY_NAME";
     public static final String COL1="ID";
     public static final String COL2="NAME";
@@ -39,6 +40,8 @@ public class SQLClass extends SQLiteOpenHelper{
     public static final String EXT_COLID="ID";
     public static final String EXT_COL1="COL1",EXT_COL2="COL2",EXT_COL3="COL3",EXT_COL4="COL4",EXT_COL5="COL5",EXT_COL6="COL6";
     public static final String EXT_COL7="COL7",EXT_COL8="COL8",EXT_COL9="COL9",EXT_COL10="COL10";
+    public static final String HIS_COL1="ID";
+    public static final String HIS_COL2="DATE";
     ArrayList<String> arr=new ArrayList<>();
     ArrayList<String> list_cat=new ArrayList<>();
     int chk=0;
@@ -69,6 +72,7 @@ public class SQLClass extends SQLiteOpenHelper{
         db.execSQL("create table " + CAT_NAME + "(CATEGORY_NAME TEXT)");
         db.execSQL("create table " + TABLE_NAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT,MOBILE_NO TEXT,EMAIL TEXT,ADDRESS TEXT,GENDER TEXT,DATE_BIRTH TEXT,START_DATE TEXT,END_DATE TEXT,INSTALL_MONTH TEXT,REMIND_TIME TEXT,SNOOZE_TIME TEXT,REMIND_DAY TEXT,DESC TEXT,TYPE TEXT)");
         db.execSQL("create table " + EXT_TABLE + "(ID INTEGER PRIMARY KEY,COL1 TEXT,COL2 TEXT,COL3 TEXT,COL4 TEXT,COL5 TEXT,COL6 TEXT,COL7 TEXT,COL8 TEXT,COL9 TEXT,COL10 TEXT)");
+        db.execSQL("create table " + PAY_HISTORY_TABLE + "(ID INTEGER PRIMARY KEY,DATE TEXT)");
     }
 
     @Override
@@ -77,6 +81,22 @@ public class SQLClass extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE "+CAT_NAME);
         db.execSQL("DROP TABLE "+EXT_TABLE);
         onCreate(db);
+    }
+
+    public boolean insertHistory(int id,String date)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues contentValues=new ContentValues();
+        contentValues.put(HIS_COL1,id);
+        contentValues.put(HIS_COL2,date);
+        long result=db.insert(PAY_HISTORY_TABLE,null,contentValues);
+        if(result==-1)
+        {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     public void insertdefault(String item)
