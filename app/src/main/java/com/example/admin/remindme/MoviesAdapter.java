@@ -96,14 +96,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                         }
                     }
             );
-            /*chk.setOnCheckedChangeListener(
-                    new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                        }
-                    }
-            );*/
         }
     }
 
@@ -128,7 +120,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         long total_days = 0;
         DataBaseModel dbm=arrayList.get(position);
         ddd=dbm;
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
